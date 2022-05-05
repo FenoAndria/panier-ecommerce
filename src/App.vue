@@ -11,7 +11,14 @@
             class="w-1/4 px-1"
           >
             <div class="card bg-violet-500 text-white">
-              <h4 class="product-name">{{ product.name }}</h4>
+              <div class="flex justify-between items-center">
+                <h4 class="product-name">
+                  {{ product.name }}
+                </h4>
+                <span class="badge text-sm bg-pink-600">{{
+                  product.quantity
+                }}</span>
+              </div>
               <hr class="border-gray-200 my-2" />
               <div class="flex justify-between">
                 <span class="badge bg-blue-500">{{ product.price }}€</span>
@@ -20,7 +27,7 @@
                     -
                   </button>
                   <span class="bg-white text-blue-900 font-bold px-4 rounded">{{
-                    product.quantity ?? 0
+                    product.order ?? 0
                   }}</span>
                   <button class="badge bg-teal-500" @click="inc(product)">
                     +
@@ -62,12 +69,12 @@
               <div>
                 <span class="mr-1">{{ panierItem.name }} </span>
                 <span class="badge bg-orange-500 text-sm"
-                  >{{ panierItem.quantity }}
+                  >{{ panierItem.order }}
                 </span>
               </div>
               <div>
                 <span class="font-semibold text-gray-200"
-                  >{{ panierItem.price * panierItem.quantity }} € |
+                  >{{ panierItem.price * panierItem.order }} € |
                 </span>
                 <button
                   class="text-red-300 text-sm badge bg-red-400"
@@ -100,7 +107,7 @@ export default {
       let sum = 0;
       if (this.panier.length > 0) {
         sum = this.panier.reduce((total, value) => {
-          return total + value.price * value.quantity;
+          return total + value.price * value.order;
         }, 0);
       }
       return sum;
@@ -114,24 +121,26 @@ export default {
       }
     },
     deleteFromCart(product) {
-      product.quantity = 0;
+      product.order = 0;
       let productIndex = this.panier.indexOf(product);
-      let temp = this.panier.splice(productIndex, 1);
+      this.panier.splice(productIndex, 1);
     },
     inc(product) {
-      if (!product.quantity) {
-        product.quantity = 0;
+      if (!product.order) {
+        product.order = 0;
       }
-      product.quantity++;
+      if (product.order < product.quantity) {
+        product.order++;
+      }
       if (!this.panier.includes(product)) {
         this.panier.push(product);
       }
     },
     dec(product) {
-      if (product.quantity > 1) {
-        product.quantity--;
+      if (product.order > 1) {
+        product.order--;
       } else {
-          this.deleteFromCart(product);
+        this.deleteFromCart(product);
       }
     },
   },
