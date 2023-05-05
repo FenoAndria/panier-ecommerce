@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import Products from "./services/products";
+import Products from "../src/services/Products";
 export default {
   name: "APP",
   data() {
